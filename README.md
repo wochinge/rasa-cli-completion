@@ -1,4 +1,4 @@
-# rasa-autocomplete
+# rasa-cli-completion
 
 Simple implementation of a bash / zsh autocomplete script for [Rasa](https://github.com/rasahq/rasa).
 
