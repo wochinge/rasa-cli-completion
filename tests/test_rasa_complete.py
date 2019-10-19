@@ -1,4 +1,4 @@
-import rasa_complete as complete
+from rasa_cli_completion import rasa_complete as complete
 
 HELP_OUTPUT = """
 usage: rasa [-h] [--version]
@@ -48,11 +48,25 @@ def test_call_rasa():
     assert isinstance(result, str)
 
 
+def test_call_rasa_level_2():
+    command = ["rasa", "data"]
+    result = complete.call_rasa(command)
+    assert "positional arguments" in HELP_OUTPUT
+    assert isinstance(result, str)
+
+
 def test_call_rasa_until_complete():
     command = "rasa --"
     result = complete.call_rasa_until_valid(command)
     assert "positional arguments" in HELP_OUTPUT
     assert isinstance(result, str)
+
+
+def test_call_rasa_until_complete_rasa_x():
+    command = "rasa x --"
+    result = complete.call_rasa_until_valid(command)
+    optional_arguments = complete.find_optional_arguments(result)
+    assert len(optional_arguments) > 1
 
 
 def test_call_rasa_if_argument_expected():
