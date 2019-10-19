@@ -15,4 +15,4 @@ Simple implementation of a bash / zsh autocomplete script for [Rasa](https://git
 
 
 ## Notes
-- The completion is quite slow at the beginning. However, the completion results are cached in `~/.rasa-autocomplete.json` (you can turn caching off by setting `RASA_AUTOCOMPLETE_CACHING_OFF=true`)
+- The completion is a bit slow at the beginning. However, the completion results are cached in `~/.rasa-autocomplete.json` (you can turn caching off by setting `RASA_AUTOCOMPLETE_CACHING_OFF=true`)
