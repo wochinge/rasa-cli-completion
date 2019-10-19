@@ -1,15 +1,19 @@
-import subprocess
+import io
 import time
+import contextlib
 from pathlib import Path
 from sys import argv
 import re
 import json
 from typing import Text, List, Dict
+import sys
+
 
 max_caching_time = 345_600  # 4 weeks
 cache_file_path = Path.home() / ".rasa-autocomplete.json"
 
 EXPECTED_ARGUMENT_ERROR = "expected one argument"
+OTHER_ARGUMENT_ERROR = "error: "  # e.g. invalid argument
 
 
 def find_positional_arguments(text: Text) -> List[Text]:
@@ -30,24 +34,40 @@ def find_optional_arguments(text: Text) -> List[Text]:
 
 
 def call_rasa(command: List[Text]) -> Text:
+    import rasa.__main__
+
     command.append("--help")
-    return subprocess.check_output(
-        command, shell=False, stderr=subprocess.PIPE
-    ).decode("utf-8")
+    sys.argv = command
+
+    std_out = io.StringIO()
+    std_error = io.StringIO()
+
+    with contextlib.redirect_stdout(std_out):
+        with contextlib.redirect_stderr(std_error):
+            try:
+                rasa.__main__.main()
+            except SystemExit as _:
+                # expected behavior
+                pass
+
+    printed_messages = std_out.getvalue()
+    if not printed_messages:
+        return std_error.getvalue()
+    else:
+        return printed_messages
 
 
 def call_rasa_until_valid(command: Text) -> Text:
-    command_as_array = command.split()
+    command_as_array = [c.strip() for c in command.split()]
 
-    try:
-        return call_rasa(command_as_array.copy())
-    except subprocess.CalledProcessError as e:
-        error_output = e.stderr.decode("utf-8")
-        if EXPECTED_ARGUMENT_ERROR in error_output:
-            # An argument is expected (e.g. a path, port, etc.)
-            return ""
-        else:
-            return call_rasa(command_as_array[:-1])
+    command_result = call_rasa(command_as_array.copy())
+
+    if EXPECTED_ARGUMENT_ERROR in command_result:
+        return ""
+    elif OTHER_ARGUMENT_ERROR in command_result:
+        return call_rasa(command_as_array[:-1])
+    else:
+        return command_result
 
 
 def get_cache() -> Dict:

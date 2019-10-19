@@ -21,4 +21,4 @@ echo "Please add this to your bash / zsh config:\n"
 
 current_directory="$( cd "$(dirname "$0")" ; pwd -P )"
 
-echo "export RASA_COMPLETE_SCRIPT=${current_directory}/rasa_complete.py"
+echo "export RASA_COMPLETE_SCRIPT=${current_directory}/rasa_cli_completion/rasa_complete.py"
