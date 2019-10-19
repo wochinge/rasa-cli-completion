@@ -33,7 +33,17 @@ optional arguments:
 
 def test_find_positional_arguments():
     positional_arguments = complete.find_positional_arguments(HELP_OUTPUT)
-    assert set(positional_arguments) == {"init", "run", "shell", "train", "interactive", "test", "visualize", "data", "x"}
+    assert set(positional_arguments) == {
+        "init",
+        "run",
+        "shell",
+        "train",
+        "interactive",
+        "test",
+        "visualize",
+        "data",
+        "x",
+    }
 
 
 def test_find_optional_arguments():
@@ -56,21 +66,28 @@ def test_call_rasa_level_2():
 
 
 def test_call_rasa_until_complete():
-    command = "rasa --"
+    command = "rasa --".split()
     result = complete.call_rasa_until_valid(command)
     assert "positional arguments" in HELP_OUTPUT
     assert isinstance(result, str)
 
 
 def test_call_rasa_until_complete_rasa_x():
-    command = "rasa x --"
+    command = "rasa x --".split()
     result = complete.call_rasa_until_valid(command)
     optional_arguments = complete.find_optional_arguments(result)
     assert len(optional_arguments) > 1
 
 
 def test_call_rasa_if_argument_expected():
-    command = "rasa x --rasa-x-port --help"
+    command = "rasa x --rasa-x-port --help".split()
     result = complete.call_rasa_until_valid(command)
 
     assert result == ""
+
+
+def test_remove_already_used_optional_arguments():
+    command = "rasa run --enable-api"
+    arguments = complete.get_arguments(command)
+
+    assert "--enable-api" not in arguments

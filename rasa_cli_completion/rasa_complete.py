@@ -57,15 +57,13 @@ def call_rasa(command: List[Text]) -> Text:
         return printed_messages
 
 
-def call_rasa_until_valid(command: Text) -> Text:
-    command_as_array = [c.strip() for c in command.split()]
-
-    command_result = call_rasa(command_as_array.copy())
+def call_rasa_until_valid(command: List[Text]) -> Text:
+    command_result = call_rasa(command.copy())
 
     if EXPECTED_ARGUMENT_ERROR in command_result:
         return ""
     elif OTHER_ARGUMENT_ERROR in command_result:
-        return call_rasa(command_as_array[:-1])
+        return call_rasa(command[:-1])
     else:
         return command_result
 
@@ -90,21 +88,31 @@ def store_cache(command: Text, arguments: List[Text], current_cache: Dict) -> No
     cache_file_path.write_text(dumped, encoding="utf-8")
 
 
+def get_arguments(current_command: Text) -> List[Text]:
+    command_as_array = [c.strip() for c in current_command.split()]
+
+    help_input = call_rasa_until_valid(command_as_array)
+
+    optional_arguments = find_optional_arguments(help_input)
+    positional_arguments = find_positional_arguments(help_input)
+    optional_arguments = [
+        arg for arg in optional_arguments if arg not in command_as_array
+    ]
+
+    return positional_arguments + optional_arguments
+
+
 if __name__ == "__main__":
-    current_command = argv[1]
+    _current_command = argv[1]
 
     cached = get_cache()
-    cached_result = cached.pop(current_command, None)
+    cached_result = cached.pop(_current_command, None)
     if not cached_result or time.time() - cached_result["timestamp"] > max_caching_time:
-        help_input = call_rasa_until_valid(current_command)
-
-        positional_arguments = find_optional_arguments(help_input)
-        optional_arguments = find_positional_arguments(help_input)
-        possibilities = positional_arguments + optional_arguments
+        possibilities = get_arguments(_current_command)
     else:
         possibilities = cached_result["args"]
 
-    store_cache(current_command, possibilities, cached)
+    store_cache(_current_command, possibilities, cached)
 
     for possibility in possibilities:
         print(possibility)
