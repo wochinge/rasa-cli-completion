@@ -103,6 +103,10 @@ def get_arguments(current_command: Text) -> List[Text]:
 
 
 if __name__ == "__main__":
+    if len(argv) < 2:
+        # No command was provided
+        exit(1)
+
     _current_command = argv[1]
 
     cached = get_cache()
