@@ -8,16 +8,26 @@ Simple implementation of a bash / zsh autocomplete script for [Rasa](https://git
 
 ![rasa-cli-completion gif](https://media.giphy.com/media/l1IZ379sMbT1WjulKr/giphy.gif)
 
-## Usage
-1. Clone this repository
-2. Source `rasa-complete.sh` 
-3. Add this your bash / zsh config:
+## Installation
+
+### Using pip
+
+1. Run `pip install rasa-cli-completion`
+2. Run `pip install .` in the cloned directory
+3. Add the output of the following command to your `.bashrc` / `.zshrc`
 
     ```bash
-    RASA_CLI_COMPLETION_PATH=<path to cloned directory>
-    source ${RASA_CLI_COMPLETION_PATH}/rasa-cli-completion/rasa-complete.sh
-    export RASA_COMPLETE_SCRIPT=${RASA_CLI_COMPLETION_PATH}/rasa_cli_completion/rasa_complete.py
-    
+    python -m rasa_cli_completion.show_config
+    ```
+
+### Using this repository
+
+1. Clone this repository
+2. Run `pip install .` in the cloned directory
+3. Add the output of the following command to your `.bashrc` / `.zshrc`
+
+    ```bash
+    python -m rasa_cli_completion.show_config
     ```
 
 ## Notes

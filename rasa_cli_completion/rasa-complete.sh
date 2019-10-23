@@ -9,7 +9,7 @@ function complete_rasa() {
         return 1
     else
         current_word="${COMP_WORDS[COMP_CWORD]}"
-        possible_arguments=`python ${RASA_COMPLETE_SCRIPT} "$COMP_LINE"`
+        possible_arguments=`python -m rasa_cli_completion.rasa_complete "$COMP_LINE"`
         COMPREPLY=( $(compgen -W "${possible_arguments}" -- ${current_word}) )
     fi
 }
