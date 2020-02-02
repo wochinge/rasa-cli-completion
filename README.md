@@ -1,4 +1,5 @@
 # rasa-cli-completion
+![](https://github.com/wochinge/rasa-cli-completion/workflows/Testing/badge.svg?branch=master)
 
 Simple implementation of a bash / zsh autocomplete script for [Rasa](https://github.com/rasahq/rasa).
 
