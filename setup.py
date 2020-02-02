@@ -11,7 +11,7 @@ setup(
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
     install_requires=["rasa~=1.3"],
-    tests_require=["pytest~=4.5"],
+    tests_require=["pytest~=4.5", "black~=19.10b0"],
     project_urls={
         "Bug Reports": "https://github.com/wochinge/rasa-cli-completion/issues",
         "Source": "https://github.com/wochinge/rasa-cli-completion",
